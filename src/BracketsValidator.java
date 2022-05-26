@@ -1,9 +1,12 @@
 import java.util.Stack;
 
+import static java.lang.Math.ceil;
+import static java.lang.Math.round;
+
 public class BracketsValidator {
     public static void main(String[] args){
         BracketsValidator bv = new BracketsValidator();
-        System.out.println(bv.validateBrackets("{{[(()))]}}"));
+        System.out.println(bv.validateBrackets("{[([])]]}"));
 
     }
 
@@ -13,39 +16,50 @@ public class BracketsValidator {
             return false;
         }
         Stack<Character> reversedS = new Stack<Character>();
-        for (int i = 0; i <s.length() ; i++) {
-            reversedS.push(s.charAt(i));
-           // System.out.println(s.charAt(i));
-        }
-        char expected ='a';
-        for (int i = 0; i < s.length() ; i++) {
+        char expected = '0';
+        boolean close=false;
+        for (int i = 0; i  < s.length() ; i++) {
             //System.out.println(s.charAt(i));
-            switch (reversedS.pop()){
+            switch (s.charAt(i)){
                 case ']':
+                    if (reversedS.empty())
+                        return false;
                     expected = '[';
+                    close = true;
                     break;
                 case '[':
-                    expected = ']';
+                    reversedS.push(s.charAt(i));
                     break;
                 case '}':
+                    if (reversedS.empty())
+                        return false;
                     expected = '{';
+                    close = true;
                     break;
                 case '{':
-                    expected = '}';
+                    reversedS.push(s.charAt(i));
                     break;
                 case ')':
+                    if (reversedS.empty())
+                        return false;
                     expected = '(';
+                    close = true;
                     break;
                 case '(':
-                    expected = ')';
+                    reversedS.push(s.charAt(i));
                     break;
-                default: return false;
+//                default: return false;
             }
             //System.out.println(s.charAt(i) + " "+ expected+ " "+reversedS.peek());
-            if(s.charAt(i) != expected)
-                return false;
+            if(close){
+                if(reversedS.pop() != expected)
+                    return false;
+
+            }
+            close = false;
+
         }
 
-        return true;
+        return reversedS.empty();
     }
 }
